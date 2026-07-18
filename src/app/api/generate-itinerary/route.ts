@@ -223,7 +223,7 @@ export function getMockItinerary(preferences: any) {
           description: "Visit the iconic 16th-century mosque Charminar. Climb its minarets for panoramic views of the Old City. Entry ticket: $0.50 (local) / $4 (foreigner). Metro: Charminar station ($0.30) is the most budget-friendly transport option.",
           type: "attraction",
           cost: 4,
-          imageUrl: "https://images.unsplash.com/photo-1608958416719-75a7c20c02c6?q=80&w=600&auto=format&fit=crop"
+          imageUrl: "https://images.unsplash.com/photo-1599839617614-22b9b940bf71?q=80&w=600&auto=format&fit=crop"
         },
         {
           timeOfDay: "Afternoon",
@@ -301,7 +301,7 @@ export function getMockItinerary(preferences: any) {
           description: "Cross the world's busiest pedestrian intersection and see the historic memorial statue of the loyal dog Hachiko. Free access.",
           type: "attraction",
           cost: 0,
-          imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?q=80&w=600&auto=format&fit=crop"
+          imageUrl: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=600&auto=format&fit=crop"
         },
         {
           timeOfDay: "Afternoon",

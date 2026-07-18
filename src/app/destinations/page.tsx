@@ -7,7 +7,7 @@ import Link from "next/link";
 const POPULAR_DESTINATIONS = [
   {
     name: "Tokyo, Japan",
-    image: "https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=600&auto=format&fit=crop",
     cost: "Moderate ($150/day)",
     bestTime: "March - May & September - November",
     todo: ["Visit Shibuya Crossing & Senso-ji Temple", "Explore TeamLab Planets digital art museum", "Day trip to Mt. Fuji"],
@@ -25,7 +25,7 @@ const POPULAR_DESTINATIONS = [
   },
   {
     name: "Hyderabad, India",
-    image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1599839617614-22b9b940bf71?q=80&w=600&auto=format&fit=crop",
     cost: "Backpacker ($50/day)",
     bestTime: "October - March (Cooler weather)",
     todo: ["Explore Charminar & Golconda Fort", "Visit Salar Jung Museum & Chowmahalla Palace", "Shop for pearls at Laad Bazaar"],
@@ -43,7 +43,7 @@ const POPULAR_DESTINATIONS = [
   },
   {
     name: "Banff, Canada",
-    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=600&auto=format&fit=crop",
     cost: "Luxury ($220/day)",
     bestTime: "June - August & December - March",
     todo: ["Canoe on Lake Louise & Moraine Lake", "Ride the Banff Gondola to Sulphur Mountain", "Hike Johnston Canyon"],
