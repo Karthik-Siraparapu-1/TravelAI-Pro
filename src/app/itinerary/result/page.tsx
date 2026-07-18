@@ -134,7 +134,14 @@ export default function ResultPage() {
                           
                           {activity.imageUrl && (
                             <div className="relative w-full h-40 my-3 rounded-xl overflow-hidden border border-border">
-                              <img src={activity.imageUrl} alt={activity.title} className="object-cover w-full h-full" />
+                              <img 
+                                src={activity.imageUrl} 
+                                alt={activity.title} 
+                                className="object-cover w-full h-full"
+                                onError={(e) => {
+                                  e.currentTarget.src = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=600&auto=format&fit=crop";
+                                }}
+                              />
                             </div>
                           )}
 

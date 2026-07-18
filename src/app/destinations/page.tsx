@@ -78,6 +78,9 @@ export default function DestinationsPage() {
                     src={dest.image} 
                     alt={dest.name} 
                     className="object-cover w-full h-full"
+                    onError={(e) => {
+                      e.currentTarget.src = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=600&auto=format&fit=crop";
+                    }}
                   />
                   <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
                     <MapPin className="w-3 h-3 text-primary" />
