@@ -160,7 +160,7 @@ export async function POST(req: Request) {
   }
 }
 
-function getMockItinerary(preferences: any) {
+export function getMockItinerary(preferences: any) {
   // Determine destination
   let dest = (preferences.destination || "").trim();
   let normalizedDest = dest.toLowerCase();

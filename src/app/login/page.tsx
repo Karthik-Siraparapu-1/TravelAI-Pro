@@ -36,10 +36,11 @@ export default function LoginPage() {
 
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Email address</label>
+                <label htmlFor="email" className="text-sm font-medium">Email address</label>
                 <div className="relative">
                   <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
+                    id="email"
                     type="email"
                     placeholder="you@example.com"
                     value={email}
@@ -52,12 +53,13 @@ export default function LoginPage() {
 
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-sm font-medium">Password</label>
+                  <label htmlFor="password" className="text-sm font-medium">Password</label>
                   <a href="#" onClick={(e) => {e.preventDefault(); alert("Password reset link sent!");}} className="text-xs text-primary hover:underline">Forgot password?</a>
                 </div>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
                   <input
+                    id="password"
                     type="password"
                     placeholder="••••••••"
                     value={password}

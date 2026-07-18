@@ -115,8 +115,9 @@ export default function PlannerForm() {
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Leaving from</label>
+                <label htmlFor="origin" className="text-sm font-medium">Leaving from</label>
                 <input 
+                  id="origin"
                   type="text" 
                   placeholder="e.g. New York, NY *" 
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
@@ -126,8 +127,9 @@ export default function PlannerForm() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Going to (Leave blank for AI suggestions)</label>
+                <label htmlFor="destination" className="text-sm font-medium">Going to (Leave blank for AI suggestions)</label>
                 <input 
+                  id="destination"
                   type="text" 
                   placeholder="e.g. Tokyo, Japan *" 
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
@@ -140,8 +142,9 @@ export default function PlannerForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Start Date</label>
+                <label htmlFor="startDate" className="text-sm font-medium">Start Date</label>
                 <input 
+                  id="startDate"
                   type="date" 
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={formData.startDate}
@@ -150,8 +153,9 @@ export default function PlannerForm() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">End Date</label>
+                <label htmlFor="endDate" className="text-sm font-medium">End Date</label>
                 <input 
+                  id="endDate"
                   type="date" 
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={formData.endDate}
@@ -163,8 +167,9 @@ export default function PlannerForm() {
 
             <div className="grid grid-cols-2 gap-4 mt-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Adults</label>
+                <label htmlFor="adults" className="text-sm font-medium">Adults</label>
                 <input 
+                  id="adults"
                   type="number" min="1" 
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={formData.adults}
@@ -175,8 +180,9 @@ export default function PlannerForm() {
                 />
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium">Children</label>
+                <label htmlFor="children" className="text-sm font-medium">Children</label>
                 <input 
+                  id="children"
                   type="number" min="0" 
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={formData.children}
@@ -220,8 +226,9 @@ export default function PlannerForm() {
             </div>
 
             <div className="space-y-3 mt-6">
-              <label className="text-sm font-medium">Currency</label>
+              <label htmlFor="currency" className="text-sm font-medium">Currency</label>
               <select 
+                id="currency"
                 className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={(formData as any).currency || "USD"}
                 onChange={(e) => updateForm('currency', e.target.value)}
@@ -282,9 +289,10 @@ export default function PlannerForm() {
               })}
             </div>
 
-            <div className="space-y-2 mt-6">
-              <label className="text-sm font-medium">Special Requests / Accessibility Needs</label>
+             <div className="space-y-2 mt-6">
+              <label htmlFor="specialRequests" className="text-sm font-medium">Special Requests / Accessibility Needs</label>
               <textarea 
+                id="specialRequests"
                 placeholder="e.g. Wheelchair accessible, avoiding stairs, traveling with a pet..."
                 className="flex min-h-[100px] w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                 value={formData.specialRequests}
@@ -323,8 +331,9 @@ export default function PlannerForm() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
               <div className="space-y-3">
-                <label className="text-sm font-medium">Preferred Transport</label>
+                <label htmlFor="transportation" className="text-sm font-medium">Preferred Transport</label>
                 <select 
+                  id="transportation"
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={formData.transportation}
                   onChange={(e) => updateForm('transportation', e.target.value)}
@@ -338,8 +347,9 @@ export default function PlannerForm() {
               </div>
 
               <div className="space-y-3">
-                <label className="text-sm font-medium">Accommodation Type</label>
+                <label htmlFor="accommodation" className="text-sm font-medium">Accommodation Type</label>
                 <select 
+                  id="accommodation"
                   className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                   value={formData.accommodation}
                   onChange={(e) => updateForm('accommodation', e.target.value)}
