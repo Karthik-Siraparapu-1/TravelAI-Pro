@@ -15,6 +15,10 @@ const itinerarySchema: Schema = {
       type: SchemaType.STRING,
       description: "A short explanation of why this destination matches the user preferences",
     },
+    weatherForecast: {
+      type: SchemaType.STRING,
+      description: "Weather forecast details (temperature, conditions, best time to pack for)",
+    },
     itinerary: {
       type: SchemaType.ARRAY,
       description: "Day-wise itinerary",
@@ -35,9 +39,10 @@ const itinerarySchema: Schema = {
                 location: { type: SchemaType.STRING },
                 costEstimate: { type: SchemaType.NUMBER },
                 currency: { type: SchemaType.STRING },
-                type: { type: SchemaType.STRING, description: "e.g., restaurant, attraction, transport" }
+                type: { type: SchemaType.STRING, description: "e.g., restaurant, attraction, transport" },
+                imageUrl: { type: SchemaType.STRING, description: "Unsplash image URL related to the landmark or food" }
               },
-              required: ["timeOfDay", "time", "title", "description", "location", "costEstimate", "currency", "type"],
+              required: ["timeOfDay", "time", "title", "description", "location", "costEstimate", "currency", "type", "imageUrl"],
             }
           }
         },
@@ -76,7 +81,7 @@ const itinerarySchema: Schema = {
       }
     }
   },
-  required: ["destination", "whyThisDestination", "itinerary", "budget", "checklist"]
+  required: ["destination", "whyThisDestination", "weatherForecast", "itinerary", "budget", "checklist"]
 };
 
 export async function POST(req: Request) {
@@ -157,17 +162,23 @@ export async function POST(req: Request) {
 
 function getMockItinerary(preferences: any) {
   // Determine destination
-  let dest = preferences.destination;
-  if (!dest) {
+  let dest = (preferences.destination || "").trim();
+  let normalizedDest = dest.toLowerCase();
+  
+  if (!normalizedDest) {
     const interests = preferences.interests || [];
     if (interests.includes("Nature") || interests.includes("Wildlife")) {
       dest = "Banff, Canada";
+      normalizedDest = "banff";
     } else if (interests.includes("History") || interests.includes("Museums")) {
       dest = "Rome, Italy";
+      normalizedDest = "rome";
     } else if (interests.includes("Nightlife") || interests.includes("Shopping")) {
       dest = "Tokyo, Japan";
+      normalizedDest = "tokyo";
     } else {
       dest = "Paris, France";
+      normalizedDest = "paris";
     }
   }
 
@@ -185,56 +196,227 @@ function getMockItinerary(preferences: any) {
     }
   }
 
-  const currency = "USD";
+  // Currency rates relative to USD
+  const currency = preferences.currency || "USD";
+  let rate = 1;
+  if (currency === "INR") rate = 80;
+  else if (currency === "EUR") rate = 0.9;
+  else if (currency === "GBP") rate = 0.77;
+  else if (currency === "AUD") rate = 1.5;
+  else if (currency === "CAD") rate = 1.37;
+  else if (currency === "JPY") rate = 155;
+
+  const convert = (valUSD: number) => Math.round(valUSD * rate);
+
   const budgetMultiplier = preferences.budget === "luxury" ? 2.5 : preferences.budget === "backpacker" ? 0.4 : 1.0;
-  
-  const flightsCost = Math.round((preferences.transportation === "flight" ? 650 : 120) * budgetMultiplier * (preferences.adults + preferences.children * 0.7));
-  const accomCost = Math.round(150 * budgetMultiplier * days);
-  const foodCost = Math.round(60 * budgetMultiplier * days * (preferences.adults + preferences.children * 0.5));
-  const transportCost = Math.round((preferences.transportation === "car" ? 70 : 25) * budgetMultiplier * days);
-  const activitiesCost = Math.round(45 * budgetMultiplier * days);
-  const shoppingCost = Math.round(150 * budgetMultiplier);
-  const emergencyCost = Math.round(100);
-  
-  const total = flightsCost + accomCost + foodCost + transportCost + activitiesCost + shoppingCost + emergencyCost;
 
-  // Day wise activities template generator
-  const activitiesTemplates = [
-    {
-      timeOfDay: "Morning",
-      time: "09:00 AM",
-      title: "City Sightseeing & Key Landmark Tour",
-      description: "Take a guided walking tour to the most iconic historic landmark in town. Get scenic views and capture photographs before the crowds arrive.",
-      type: "attraction",
-      costOffset: 15
+  // Real Database of Itineraries
+  const db: Record<string, { weather: string, why: string, activities: any[] }> = {
+    hyderabad: {
+      weather: "Warm and dry. Ideal months: Oct-Mar (pleasant temperatures 18°C-31°C). Sums up to warm afternoons and cool, breezy evenings.",
+      why: "Hyderabad is rich in Nizami history, boasting spectacular heritage monuments, world-famous biryanis, and traditional pearl bazaars.",
+      activities: [
+        {
+          timeOfDay: "Morning",
+          time: "09:30 AM",
+          title: "Explore Charminar Monument",
+          description: "Visit the iconic 16th-century mosque Charminar. Climb its minarets for panoramic views of the Old City. Entry ticket: $0.50 (local) / $4 (foreigner). Metro: Charminar station ($0.30) is the most budget-friendly transport option.",
+          type: "attraction",
+          cost: 4,
+          imageUrl: "https://images.unsplash.com/photo-1608958416719-75a7c20c02c6?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Afternoon",
+          time: "01:00 PM",
+          title: "Authentic Biryani at Shadab Cafe",
+          description: "Indulge in slow-cooked Hyderabadi mutton biryani, double-ka-meetha dessert, and traditional kebabs. Very popular, expect brief waiting lines.",
+          type: "restaurant",
+          cost: 8,
+          imageUrl: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Evening",
+          time: "04:30 PM",
+          title: "Shop Pearl Bazaars at Laad Bazaar",
+          description: "Stroll through the narrow lanes of Laad Bazaar adjacent to Charminar, famous for traditional lacquer bangles, semi-precious pearls, and block-print clothing.",
+          type: "attraction",
+          cost: 0,
+          imageUrl: "https://images.unsplash.com/photo-1599839617614-22b9b940bf71?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Night",
+          time: "07:30 PM",
+          title: "Royal Dinner at Jewel of Nizam",
+          description: "Enjoy Mughlai and Nizami fine dining inside a luxury tower overlooking Gandipet Lake. Traditional live sitar music adds to the premium heritage ambience.",
+          type: "restaurant",
+          cost: 35,
+          imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Morning",
+          time: "09:00 AM",
+          title: "Tour Golconda Fort Ruins",
+          description: "Visit the massive medieval fortress Golconda Fort, famous for its advanced acoustics (clapping at the gates resonates at the hilltop palace). Ticket: $4. Private cabs cost $8.",
+          type: "attraction",
+          cost: 4,
+          imageUrl: "https://images.unsplash.com/photo-1627894006066-b45785c49007?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Afternoon",
+          time: "01:30 PM",
+          title: "Traditional South Indian Thali at Chutneys",
+          description: "Feast on a multi-course vegetarian South Indian thali featuring steamed idlis, dosas, and six varieties of homemade chutneys.",
+          type: "restaurant",
+          cost: 6,
+          imageUrl: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Evening",
+          time: "05:00 PM",
+          title: "Visit Qutb Shahi Tombs",
+          description: "Explore the beautifully restored dome-shaped tombs of the seven Qutb Shahi kings, set in landscaped gardens near Golconda Fort. Entry fee: $2.",
+          type: "attraction",
+          cost: 2,
+          imageUrl: "https://images.unsplash.com/photo-1607582455959-1e35fa8480de?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Night",
+          time: "08:00 PM",
+          title: "Rooftop Dinner at Over The Moon",
+          description: "Dine at a premium rooftop bistro in Gachibowli with sweeping views of the modern cyber city skyline, featuring global cuisine and microbrews.",
+          type: "restaurant",
+          cost: 25,
+          imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop"
+        }
+      ]
     },
-    {
-      timeOfDay: "Afternoon",
-      time: "01:00 PM",
-      title: "Authentic Local Lunch Experience",
-      description: "Dine at a highly recommended local market or bistro, enjoying local delicacies and neighborhood specialty dishes.",
-      type: "restaurant",
-      costOffset: 25
-    },
-    {
-      timeOfDay: "Evening",
-      time: "04:30 PM",
-      title: "Museum Exploration or Cultural Tour",
-      description: "Dive deep into the culture by visiting a major local gallery, museum, or historical cathedral, featuring stunning classic architecture.",
-      type: "attraction",
-      costOffset: 20
-    },
-    {
-      timeOfDay: "Night",
-      time: "07:30 PM",
-      title: "Scenic Dinner & Evening Leisurely Walk",
-      description: "Enjoy a relaxed dining experience at a cozy spot with beautiful views of the cityscape, followed by a walk through the bustling main square.",
-      type: "restaurant",
-      costOffset: 45
+    tokyo: {
+      weather: "Temperate. Mild springs (12°C-20°C, Cherry blossoms in April) and crisp autumns (10°C-18°C) are the absolute best times to explore Tokyo.",
+      why: "Tokyo perfectly balances ultra-modern futuristic skylines, neon nightlife, and ancient shrines connected by the world's best subway network.",
+      activities: [
+        {
+          timeOfDay: "Morning",
+          time: "09:00 AM",
+          title: "Shibuya Crossing & Hachiko Statue",
+          description: "Cross the world's busiest pedestrian intersection and see the historic memorial statue of the loyal dog Hachiko. Free access.",
+          type: "attraction",
+          cost: 0,
+          imageUrl: "https://images.unsplash.com/photo-1540959733332-eab4deceeaf7?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Afternoon",
+          time: "12:30 PM",
+          title: "Ichiran Ramen in Shibuya",
+          description: "Customize your spicy tonkotsu ramen broth, noodle texture, and garlic level. Dine in individual solo booths for maximum focus on flavor.",
+          type: "restaurant",
+          cost: 12,
+          imageUrl: "https://images.unsplash.com/photo-1569718212165-3a8278d5f624?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Evening",
+          time: "03:30 PM",
+          title: "Stroll Harajuku Takeshita Street",
+          description: "Explore the colorful alleyway famous for crazy crepes, rainbow cotton candy, pop-culture fashion boutiques, and cosplay gear.",
+          type: "attraction",
+          cost: 0,
+          imageUrl: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Night",
+          time: "07:30 PM",
+          title: "Yakitori Dinner in Omoide Yokocho",
+          description: "Dine inside 'Memory Lane' - a historic Shinjuku alley filled with tiny yakitori stands cooking skewered chicken over binchotan charcoal. Local beer cost: $5.",
+          type: "restaurant",
+          cost: 25,
+          imageUrl: "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Morning",
+          time: "09:30 AM",
+          title: "Senso-ji Temple in Asakusa",
+          description: "Walk under the massive red lantern of Kaminarimon Gate to visit Tokyo's oldest Buddhist temple. Nakamise street is lined with sweet stalls.",
+          type: "attraction",
+          cost: 0,
+          imageUrl: "https://images.unsplash.com/photo-1501854140801-50d01698950b?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Afternoon",
+          time: "01:00 PM",
+          title: "Sushi Feast at Tsukiji Outer Market",
+          description: "Try blow-torched wagyu beef, fresh sea urchin, tamagoyaki (sweet omelet), and premium fatty tuna nigiri directly from vendor stalls.",
+          type: "restaurant",
+          cost: 30,
+          imageUrl: "https://images.unsplash.com/photo-1579871494447-9811cf80d66c?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Evening",
+          time: "04:30 PM",
+          title: "Digital Art at teamLab Planets",
+          description: "Walk barefoot through glowing water, rooms filled with floating orchids, and crystal light tunnels. General ticket fee: $26. Booking in advance is mandatory.",
+          type: "attraction",
+          cost: 26,
+          imageUrl: "https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=600&auto=format&fit=crop"
+        },
+        {
+          timeOfDay: "Night",
+          time: "08:00 PM",
+          title: "Shabu-Shabu Wagyu Dinner at Rokkasen",
+          description: "Dine on high-grade A5 wagyu beef slices dipped in hot broth, accompanied by fresh snow crab legs and premium Japanese sake.",
+          type: "restaurant",
+          cost: 90,
+          imageUrl: "https://images.unsplash.com/photo-1544025162-d76694265947?q=80&w=600&auto=format&fit=crop"
+        }
+      ]
     }
-  ];
+  };
 
+  const selectedDb = db[normalizedDest] || {
+    weather: "Pleasant spring and autumn climates (10°C-20°C). Ideal for walking through local city paths and parks.",
+    why: `A customized excursion in ${dest} matching your interests and preferred travel style.`,
+    activities: [
+      {
+        timeOfDay: "Morning",
+        time: "09:00 AM",
+        title: "Visit Historic City Center & Main Square",
+        description: "Orientation walk to the major landmarks in town. Walkable streets make exploring safe and easy.",
+        type: "attraction",
+        cost: 0,
+        imageUrl: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        timeOfDay: "Afternoon",
+        time: "01:00 PM",
+        title: "Local Bistro Lunch",
+        description: "Dine on traditional regional lunch menus at a local bistro. Highly rated by residents.",
+        type: "restaurant",
+        cost: 20,
+        imageUrl: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        timeOfDay: "Evening",
+        time: "04:30 PM",
+        title: "Explore the City Museum & Art Gallery",
+        description: "View classic architecture and paintings. Entry ticket: $15. Accessible by local buses ($2.50).",
+        type: "attraction",
+        cost: 15,
+        imageUrl: "https://images.unsplash.com/photo-1565008447742-97f6f38c985c?q=80&w=600&auto=format&fit=crop"
+      },
+      {
+        timeOfDay: "Night",
+        time: "07:30 PM",
+        title: "Sunset Dinner & Panoramic Views",
+        description: "Celebrate your trip with premium local dining overlooking the skyline.",
+        type: "restaurant",
+        cost: 45,
+        imageUrl: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?q=80&w=600&auto=format&fit=crop"
+      }
+    ]
+  };
+
+  // Generate activities list by looping over database activities
   const itinerary = [];
+  const activitiesPerDay = 4;
+  
   for (let i = 1; i <= days; i++) {
     const currentDate = new Date(startDate);
     currentDate.setDate(startDate.getDate() + i - 1);
@@ -245,35 +427,30 @@ function getMockItinerary(preferences: any) {
       year: "numeric"
     });
 
-    const dayActivities = activitiesTemplates.map((template) => {
-      // Customize descriptions/titles based on day number
-      let title = template.title;
-      let description = template.description;
-      let location = `Central ${dest}`;
-
-      if (i === 1 && template.timeOfDay === "Morning") {
-        title = `Welcome to ${dest} - Orientation Walk`;
-        description = `Arrive in ${dest}, check into your accommodation, and take a casual stroll to get oriented with the nearby neighborhoods.`;
-      } else if (i === days && template.timeOfDay === "Night") {
-        title = "Farewell Dinner & Night Views";
-        description = `Celebrate your final night in ${dest} with a memorable culinary experience and look out over the city lights.`;
-      } else {
-        // Vary details slightly
-        title = `Day ${i} - ${template.title}`;
-        description = `${template.description.replace("town", dest).replace("city", dest)}`;
+    const dayActivities = [];
+    for (let actIdx = 0; actIdx < activitiesPerDay; actIdx++) {
+      // Loop or reuse database activities
+      const dbActIndex = ((i - 1) * activitiesPerDay + actIdx) % selectedDb.activities.length;
+      const originalAct = selectedDb.activities[dbActIndex];
+      
+      let title = originalAct.title;
+      let description = originalAct.description;
+      if (i > 1 && !db[normalizedDest]) {
+        title = `Day ${i} - ${originalAct.title}`;
       }
 
-      return {
-        timeOfDay: template.timeOfDay,
-        time: template.time,
+      dayActivities.push({
+        timeOfDay: originalAct.timeOfDay,
+        time: originalAct.time,
         title,
         description,
-        location,
-        costEstimate: Math.round(template.costOffset * budgetMultiplier),
+        location: originalAct.location || `${dest} City Center`,
+        costEstimate: convert(Math.round(originalAct.cost * budgetMultiplier)),
         currency,
-        type: template.type
-      };
-    });
+        type: originalAct.type,
+        imageUrl: originalAct.imageUrl
+      });
+    }
 
     itinerary.push({
       day: i,
@@ -282,9 +459,21 @@ function getMockItinerary(preferences: any) {
     });
   }
 
+  // Calculate budget costs in selected currency
+  const flightsCost = convert(Math.round((preferences.transportation === "flight" ? 650 : 120) * budgetMultiplier * (preferences.adults + preferences.children * 0.7)));
+  const accomCost = convert(Math.round(150 * budgetMultiplier * days));
+  const foodCost = convert(Math.round(60 * budgetMultiplier * days * (preferences.adults + preferences.children * 0.5)));
+  const transportCost = convert(Math.round((preferences.transportation === "car" ? 70 : 25) * budgetMultiplier * days));
+  const activitiesCost = convert(Math.round(45 * budgetMultiplier * days));
+  const shoppingCost = convert(Math.round(150 * budgetMultiplier));
+  const emergencyCost = convert(100);
+  
+  const total = flightsCost + accomCost + foodCost + transportCost + activitiesCost + shoppingCost + emergencyCost;
+
   return {
     destination: dest,
-    whyThisDestination: `Based on your interest in ${preferences.interests?.join(", ") || "traveling"} and your preference for a ${preferences.travelStyle} style, ${dest} is an exceptional fit. This customized itinerary balances your ${preferences.budget} budget with selected accommodation and transportation logistics.`,
+    whyThisDestination: selectedDb.why,
+    weatherForecast: selectedDb.weather,
     itinerary,
     budget: {
       flights: flightsCost,
@@ -301,37 +490,19 @@ function getMockItinerary(preferences: any) {
       {
         category: "Clothing",
         items: [
-          "Comfortable walking sneakers",
-          "Layered clothing options (cardigan/jacket)",
-          "Smart casual wear for dinner outings",
-          "All-weather umbrella or light raincoat"
+          "Comfortable walking shoes",
+          "Layered options matching weather",
+          "One formal/smart casual dress",
+          "Umbrella or light windbreaker"
         ]
       },
       {
         category: "Documents & Finances",
         items: [
-          "Passport and/or travel IDs",
-          "Printed booking confirmations (hotel, flights)",
-          "Credit card with zero foreign transaction fees",
-          "Small amount of local currency cash"
-        ]
-      },
-      {
-        category: "Electronics",
-        items: [
-          "Universal power plug adapter",
-          "Mobile phone chargers & portable power banks",
-          "Camera & spare memory cards",
-          "Noise-cancelling travel headphones"
-        ]
-      },
-      {
-        category: "Health & Personal Care",
-        items: [
-          "Prescribed medicines & basic first-aid supplies",
-          "Travel size toiletries (TSA compliant)",
-          "Sunscreen and UV lip balm",
-          "Hand sanitizer & sanitizing wipes"
+          "Passport and visa documents",
+          "Hotel booking vouchers",
+          "Credit card with zero exchange fees",
+          "Small cash amount in local currency"
         ]
       }
     ]

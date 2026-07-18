@@ -86,25 +86,59 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl font-bold mb-12">Loved by travelers worldwide</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((i) => (
-              <div key={i} className="glass p-6 rounded-2xl text-left hover:-translate-y-1 transition-transform duration-300">
-                <div className="flex text-yellow-500 mb-4">
-                  {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
+            <div className="glass p-6 rounded-2xl text-left hover:-translate-y-1 transition-transform duration-300">
+              <div className="flex text-yellow-500 mb-4">
+                {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
+              </div>
+              <p className="mb-6 text-foreground/80">
+                "TravelAI Pro completely changed how I plan my vacations. The itinerary was spot on, and it found restaurants I would have never discovered myself!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
+                  JD
                 </div>
-                <p className="mb-6 text-foreground/80">
-                  "TravelAI Pro completely changed how I plan my vacations. The itinerary was spot on, and it found restaurants I would have never discovered myself!"
-                </p>
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
-                    JD
-                  </div>
-                  <div>
-                    <p className="font-semibold text-sm">Jane Doe</p>
-                    <p className="text-xs text-muted-foreground">Traveled to Japan</p>
-                  </div>
+                <div>
+                  <p className="font-semibold text-sm">Jane Doe</p>
+                  <p className="text-xs text-muted-foreground">Traveled to Japan</p>
                 </div>
               </div>
-            ))}
+            </div>
+
+            <div className="glass p-6 rounded-2xl text-left hover:-translate-y-1 transition-transform duration-300">
+              <div className="flex text-yellow-500 mb-4">
+                {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
+              </div>
+              <p className="mb-6 text-foreground/80">
+                "Planning a family trip for 5 was always a nightmare. This AI put together a perfect itinerary with public transport costs and museum ticket details in 10 seconds!"
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
+                  SJ
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">Sarah Jenkins</p>
+                  <p className="text-xs text-muted-foreground">Traveled to Italy</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="glass p-6 rounded-2xl text-left hover:-translate-y-1 transition-transform duration-300">
+              <div className="flex text-yellow-500 mb-4">
+                {[...Array(5)].map((_, j) => <Star key={j} className="w-4 h-4 fill-current" />)}
+              </div>
+              <p className="mb-6 text-foreground/80">
+                "I loved the flexible currency option. Being able to see costs in INR while planning a trip to Banff was super helpful. The packing checklist was incredibly accurate."
+              </p>
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center font-bold text-primary">
+                  LP
+                </div>
+                <div>
+                  <p className="font-semibold text-sm">Liam Patel</p>
+                  <p className="text-xs text-muted-foreground">Traveled to Canada</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

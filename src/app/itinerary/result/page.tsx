@@ -131,6 +131,13 @@ export default function ResultPage() {
                               {activity.time}
                             </span>
                           </div>
+                          
+                          {activity.imageUrl && (
+                            <div className="relative w-full h-40 my-3 rounded-xl overflow-hidden border border-border">
+                              <img src={activity.imageUrl} alt={activity.title} className="object-cover w-full h-full" />
+                            </div>
+                          )}
+
                           <p className="text-sm text-muted-foreground mb-2">{activity.description}</p>
                           <div className="flex items-center gap-4 text-xs text-muted-foreground font-medium">
                             <span className="flex items-center gap-1">
@@ -154,6 +161,19 @@ export default function ResultPage() {
           {/* Sidebar: Budget & Checklist */}
           <div className="space-y-8">
             
+            {/* Weather Widget */}
+            {itineraryData.weatherForecast && (
+              <div className="glass rounded-3xl p-6 border border-border shadow-sm">
+                <h2 className="text-xl font-bold flex items-center gap-2 mb-4">
+                  <Compass className="w-5 h-5 text-primary" />
+                  Expected Weather
+                </h2>
+                <p className="text-sm text-muted-foreground leading-relaxed">
+                  {itineraryData.weatherForecast}
+                </p>
+              </div>
+            )}
+
             {/* Budget Widget */}
             <div className="glass rounded-3xl p-6 border border-border shadow-sm">
               <h2 className="text-xl font-bold flex items-center gap-2 mb-6">
