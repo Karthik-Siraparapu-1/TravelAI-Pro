@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { MapPin, Plane, DollarSign, Calendar, Compass, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +9,8 @@ const POPULAR_DESTINATIONS = [
   {
     name: "Tokyo, Japan",
     image: "https://images.unsplash.com/photo-1503899036084-c55cdd92da26?q=80&w=600&auto=format&fit=crop",
-    cost: "Moderate ($150/day)",
+    cost: 150,
+    costLabel: "Moderate",
     bestTime: "March - May & September - November",
     todo: ["Visit Shibuya Crossing & Senso-ji Temple", "Explore TeamLab Planets digital art museum", "Day trip to Mt. Fuji"],
     eat: ["Fresh sushi at Tsukiji Outer Market", "Ramen at Ichiran or AFURI", "Matcha desserts in Asakusa"],
@@ -17,7 +19,8 @@ const POPULAR_DESTINATIONS = [
   {
     name: "Paris, France",
     image: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?q=80&w=600&auto=format&fit=crop",
-    cost: "Luxury ($250/day)",
+    cost: 250,
+    costLabel: "Luxury",
     bestTime: "April - June & October - November",
     todo: ["Climb the Eiffel Tower & tour Louvre", "Walk through Montmartre & Sacré-Cœur", "Seine River cruise at sunset"],
     eat: ["Croissants at local boulangeries", "Steak-frites at traditional bistros", "Macarons at Ladurée"],
@@ -26,7 +29,8 @@ const POPULAR_DESTINATIONS = [
   {
     name: "Hyderabad, India",
     image: "https://images.unsplash.com/photo-1599839617614-22b9b940bf71?q=80&w=600&auto=format&fit=crop",
-    cost: "Backpacker ($50/day)",
+    cost: 50,
+    costLabel: "Backpacker",
     bestTime: "October - March (Cooler weather)",
     todo: ["Explore Charminar & Golconda Fort", "Visit Salar Jung Museum & Chowmahalla Palace", "Shop for pearls at Laad Bazaar"],
     eat: ["Authentic Hyderabadi Biryani at Shadab or Cafe Bahar", "Double ka Meetha dessert", "Irani Chai with Osmania Biscuits"],
@@ -35,7 +39,8 @@ const POPULAR_DESTINATIONS = [
   {
     name: "Rome, Italy",
     image: "https://images.unsplash.com/photo-1552832230-c0197dd311b5?q=80&w=600&auto=format&fit=crop",
-    cost: "Moderate ($180/day)",
+    cost: 180,
+    costLabel: "Moderate",
     bestTime: "April - May & September - October",
     todo: ["Tour Colosseum & Roman Forum", "Throw a coin in Trevi Fountain", "Explore Vatican City & St. Peter's"],
     eat: ["Pasta Carbonara & Cacio e Pepe", "Gelato at Giolitti", "Roman-style thin crust pizza"],
@@ -44,7 +49,8 @@ const POPULAR_DESTINATIONS = [
   {
     name: "Banff, Canada",
     image: "https://images.unsplash.com/photo-1493246507139-91e8fad9978e?q=80&w=600&auto=format&fit=crop",
-    cost: "Luxury ($220/day)",
+    cost: 220,
+    costLabel: "Luxury",
     bestTime: "June - August & December - March",
     todo: ["Canoe on Lake Louise & Moraine Lake", "Ride the Banff Gondola to Sulphur Mountain", "Hike Johnston Canyon"],
     eat: ["Rocky Mountain game meats (Bison)", "Maple-infused dishes", "Fresh pastries at Wild Flour Bakery"],
@@ -53,15 +59,63 @@ const POPULAR_DESTINATIONS = [
 ];
 
 export default function DestinationsPage() {
+  const [selectedCurrency, setSelectedCurrency] = useState("USD");
+
+  const currencySymbols: Record<string, string> = {
+    USD: "$",
+    EUR: "€",
+    GBP: "£",
+    INR: "₹",
+    AUD: "A$",
+    CAD: "C$",
+    JPY: "¥"
+  };
+
+  const currencyRates: Record<string, number> = {
+    USD: 1,
+    EUR: 0.9,
+    GBP: 0.77,
+    INR: 80,
+    AUD: 1.5,
+    CAD: 1.37,
+    JPY: 155
+  };
+
+  const convertCost = (usdAmount: number) => {
+    const rate = currencyRates[selectedCurrency] || 1;
+    const symbol = currencySymbols[selectedCurrency] || "$";
+    const converted = Math.round(usdAmount * rate);
+    return `${symbol}${converted.toLocaleString()}`;
+  };
+
   return (
     <main className="container mx-auto px-4 max-w-6xl pt-32 pb-20">
-      <div className="text-center mb-16">
+      <div className="text-center mb-10">
         <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
           Explore <span className="text-primary">Popular Destinations</span>
         </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto mb-6">
           Get detailed insights on popular destinations, real local costs, must-do activities, and famous local foods before planning your custom AI trip.
         </p>
+
+        {/* Currency Selector Widget */}
+        <div className="inline-flex items-center gap-3 bg-card border border-border px-4 py-2.5 rounded-full shadow-sm">
+          <label htmlFor="destCurrency" className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Display Currency:</label>
+          <select 
+            id="destCurrency"
+            value={selectedCurrency}
+            onChange={(e) => setSelectedCurrency(e.target.value)}
+            className="bg-transparent text-sm font-bold text-foreground focus:outline-none cursor-pointer"
+          >
+            <option value="USD">USD ($)</option>
+            <option value="EUR">EUR (€)</option>
+            <option value="GBP">GBP (£)</option>
+            <option value="INR">INR (₹)</option>
+            <option value="AUD">AUD ($)</option>
+            <option value="CAD">CAD ($)</option>
+            <option value="JPY">JPY (¥)</option>
+          </select>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -85,10 +139,10 @@ export default function DestinationsPage() {
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between text-sm">
                 <span className="flex items-center gap-1 font-semibold text-primary">
-                  <DollarSign className="w-4 h-4" /> Cost: {dest.cost}
+                  <DollarSign className="w-4 h-4" /> {dest.costLabel} ({convertCost(dest.cost)}/day)
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground text-xs font-medium">
-                  <Calendar className="w-3.5 h-3.5" /> Best Time: {dest.bestTime}
+                  <Calendar className="w-3.5 h-3.5" /> {dest.bestTime}
                 </span>
               </div>
 
