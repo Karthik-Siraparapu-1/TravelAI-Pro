@@ -56,7 +56,7 @@ export default function DestinationsPage() {
   return (
     <main className="container mx-auto px-4 max-w-6xl pt-32 pb-20">
       <div className="text-center mb-16">
-        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+        <h1 className="text-3xl sm:text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
           Explore <span className="text-primary">Popular Destinations</span>
         </h1>
         <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
