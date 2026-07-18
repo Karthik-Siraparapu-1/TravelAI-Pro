@@ -3,8 +3,6 @@
 import { MapPin, Plane, DollarSign, Calendar, Compass, ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 
 const POPULAR_DESTINATIONS = [
   {
@@ -27,7 +25,7 @@ const POPULAR_DESTINATIONS = [
   },
   {
     name: "Hyderabad, India",
-    image: "https://images.unsplash.com/photo-1608958416719-75a7c20c02c6?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=600&auto=format&fit=crop",
     cost: "Backpacker ($50/day)",
     bestTime: "October - March (Cooler weather)",
     todo: ["Explore Charminar & Golconda Fort", "Visit Salar Jung Museum & Chowmahalla Palace", "Shop for pearls at Laad Bazaar"],
@@ -45,7 +43,7 @@ const POPULAR_DESTINATIONS = [
   },
   {
     name: "Banff, Canada",
-    image: "https://images.unsplash.com/photo-1522083165195-342750297f4e?q=80&w=600&auto=format&fit=crop",
+    image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=600&auto=format&fit=crop",
     cost: "Luxury ($220/day)",
     bestTime: "June - August & December - March",
     todo: ["Canoe on Lake Louise & Moraine Lake", "Ride the Banff Gondola to Sulphur Mountain", "Hike Johnston Canyon"],
@@ -56,79 +54,71 @@ const POPULAR_DESTINATIONS = [
 
 export default function DestinationsPage() {
   return (
-    <div className="flex flex-col min-h-screen bg-background">
-      <Navbar />
-      
-      <main className="flex-grow pt-32 pb-20">
-        <div className="container mx-auto px-4 max-w-6xl">
-          <div className="text-center mb-16">
-            <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
-              Explore <span className="text-primary">Popular Destinations</span>
-            </h1>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Get detailed insights on popular destinations, real local costs, must-do activities, and famous local foods before planning your custom AI trip.
-            </p>
-          </div>
+    <main className="container mx-auto px-4 max-w-6xl pt-32 pb-20">
+      <div className="text-center mb-16">
+        <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-4">
+          Explore <span className="text-primary">Popular Destinations</span>
+        </h1>
+        <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+          Get detailed insights on popular destinations, real local costs, must-do activities, and famous local foods before planning your custom AI trip.
+        </p>
+      </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {POPULAR_DESTINATIONS.map((dest, index) => (
-              <div key={index} className="glass rounded-3xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                <div className="relative h-48 w-full">
-                  <img 
-                    src={dest.image} 
-                    alt={dest.name} 
-                    className="object-cover w-full h-full"
-                    onError={(e) => {
-                      e.currentTarget.src = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=600&auto=format&fit=crop";
-                    }}
-                  />
-                  <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
-                    <MapPin className="w-3 h-3 text-primary" />
-                    {dest.name}
-                  </div>
-                </div>
-                
-                <div className="p-6 space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="flex items-center gap-1 font-semibold text-primary">
-                      <DollarSign className="w-4 h-4" /> Cost: {dest.cost}
-                    </span>
-                    <span className="flex items-center gap-1 text-muted-foreground text-xs font-medium">
-                      <Calendar className="w-3.5 h-3.5" /> Best Time: {dest.bestTime}
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-sm text-foreground/80 mb-2 uppercase tracking-wide">Places to Go / Things to Do</h3>
-                    <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pl-1">
-                      {dest.todo.map((item, idx) => <li key={idx}>{item}</li>)}
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h3 className="font-bold text-sm text-foreground/80 mb-2 uppercase tracking-wide">Must Eat</h3>
-                    <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pl-1">
-                      {dest.eat.map((item, idx) => <li key={idx}>{item}</li>)}
-                    </ul>
-                  </div>
-
-                  <div className="pt-3 border-t border-border/60 text-xs text-muted-foreground">
-                    <strong className="text-foreground">Transport:</strong> {dest.transport}
-                  </div>
-
-                  <Link href="/planner" className="block pt-2">
-                    <button className="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-semibold hover:bg-primary hover:text-primary-foreground transition-all flex items-center justify-center gap-2">
-                      Plan a trip here <ArrowRight className="w-4 h-4" />
-                    </button>
-                  </Link>
-                </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {POPULAR_DESTINATIONS.map((dest, index) => (
+          <div key={index} className="glass rounded-3xl overflow-hidden border border-border shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+            <div className="relative h-48 w-full">
+              <img 
+                src={dest.image} 
+                alt={dest.name} 
+                className="object-cover w-full h-full"
+                onError={(e) => {
+                  e.currentTarget.src = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?q=80&w=600&auto=format&fit=crop";
+                }}
+              />
+              <div className="absolute top-4 left-4 bg-background/80 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold flex items-center gap-1">
+                <MapPin className="w-3 h-3 text-primary" />
+                {dest.name}
               </div>
-            ))}
-          </div>
-        </div>
-      </main>
+            </div>
+            
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between text-sm">
+                <span className="flex items-center gap-1 font-semibold text-primary">
+                  <DollarSign className="w-4 h-4" /> Cost: {dest.cost}
+                </span>
+                <span className="flex items-center gap-1 text-muted-foreground text-xs font-medium">
+                  <Calendar className="w-3.5 h-3.5" /> Best Time: {dest.bestTime}
+                </span>
+              </div>
 
-      <Footer />
-    </div>
+              <div>
+                <h3 className="font-bold text-sm text-foreground/80 mb-2 uppercase tracking-wide">Places to Go / Things to Do</h3>
+                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pl-1">
+                  {dest.todo.map((item, idx) => <li key={idx}>{item}</li>)}
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-bold text-sm text-foreground/80 mb-2 uppercase tracking-wide">Must Eat</h3>
+                <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1 pl-1">
+                  {dest.eat.map((item, idx) => <li key={idx}>{item}</li>)}
+                </ul>
+              </div>
+
+              <div className="pt-3 border-t border-border/60 text-xs text-muted-foreground">
+                <strong className="text-foreground">Transport:</strong> {dest.transport}
+              </div>
+
+              <Link href="/planner" className="block pt-2">
+                <button className="w-full bg-primary/10 text-primary py-2.5 rounded-xl font-semibold hover:bg-primary hover:text-primary-foreground transition-all flex items-center justify-center gap-2">
+                  Plan a trip here <ArrowRight className="w-4 h-4" />
+                </button>
+              </Link>
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
   );
 }

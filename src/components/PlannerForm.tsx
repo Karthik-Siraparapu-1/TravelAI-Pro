@@ -33,6 +33,7 @@ export default function PlannerForm() {
     interests: [] as string[],
     accommodation: "hotel",
     transportation: "flight",
+    currency: "USD",
     specialRequests: "",
   });
 
@@ -230,7 +231,7 @@ export default function PlannerForm() {
               <select 
                 id="currency"
                 className="flex h-12 w-full rounded-xl border border-input bg-transparent px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={(formData as any).currency || "USD"}
+                value={formData.currency}
                 onChange={(e) => updateForm('currency', e.target.value)}
               >
                 <option value="USD">USD ($)</option>
