@@ -72,11 +72,14 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className="md:hidden absolute top-full left-0 right-0 glass border-t border-border shadow-lg animate-in slide-in-from-top-2">
           <div className="flex flex-col p-4 space-y-4">
-            <Link href="/destinations" className="text-foreground hover:text-primary p-2">
+             <Link href="/destinations" className="text-foreground hover:text-primary p-2">
               Destinations
             </Link>
             <Link href="/pricing" className="text-foreground hover:text-primary p-2">
               Pricing
+            </Link>
+            <Link href="/about" className="text-foreground hover:text-primary p-2">
+              About
             </Link>
             <Link href="/login" className="text-foreground hover:text-primary p-2">
               Log in
